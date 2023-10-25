@@ -1,6 +1,8 @@
+import Tweet from "components/Roket";
 import { dbService } from "fbase";
 import { addDoc, collection, getDocs, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useState, useCallback } from "react";
+import Roket from "components/Roket";
 
 const Home = ({ userObj }) => {
   const [tweet, setTweet] = useState("");
@@ -21,6 +23,7 @@ const Home = ({ userObj }) => {
     await addDoc(collection(dbService, "tweets"), {
       text: tweet,
       createAt: Date.now(),
+      creatorId: userObj.uid,
     })
     setTweet("");
   };
@@ -38,9 +41,7 @@ const Home = ({ userObj }) => {
       </form>
       <div>
         {tweets.map((tweet) => (
-          <div key={tweet.id}>
-            <h4>{tweet.text}</h4>
-          </div>
+          <Roket key={tweet.id} tweetObj={tweet} isOwner={tweet.creatorId === userObj.uid} />
         ))}
       </div>
     </div>
